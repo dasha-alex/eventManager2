@@ -3,70 +3,66 @@
 #include <chrono>
 #include <format>
 
-// bool compareEvents(const Event& a, const Event& b) {
-//     return a.date_ < b.date_;
-// }
+void sortFile(const std::string& filename) {
+    std::ifstream inFile(filename);
+    if (!inFile.is_open()) {
+        throw std::runtime_error("Cannot open file for sorting: " + filename);
+    }
 
-// void sortFile(const std::string& filename) {
-//     std::ifstream inFile(filename);
-//     if (!inFile.is_open()) {
-//         throw std::runtime_error("Cannot open file for sorting: " + filename);
-//     }
+    std::vector<Event> events;
+    std::string line;
 
-//     std::vector<Event> events;
-//     std::string line;
+    while (std::getline(inFile, line)) {
+        if (line.empty()) continue;
 
-//     while (std::getline(inFile, line)) {
-//         if (line.empty()) continue;
+        std::istringstream iss(line);
+        std::string dateStr, description;
 
-//         std::istringstream iss(line);
-//         std::string dateStr, description;
+        iss >> dateStr;
+        if (dateStr.size() != 10 || dateStr[2] != '.' || dateStr[5] != '.') {
+            if (dateStr.size() == 10 && dateStr[2] == '-' && dateStr[5] == '-') {
+                dateStr[2] = '.';
+                dateStr[5] = '.';
+            }
+            else {
+                continue;
+            }
+        }
 
-//         iss >> dateStr;
-//         if (dateStr.size() != 10 || dateStr[2] != '.' || dateStr[5] != '.') {
-//             if (dateStr.size() == 10 && dateStr[2] == '-' && dateStr[5] == '-') {
-//                 dateStr[2] = '.';
-//                 dateStr[5] = '.';
-//             }
-//             else {
-//                 continue;
-//             }
-//         }
+        try {
+            int day = std::stoi(dateStr.substr(0, 2));
+            int month = std::stoi(dateStr.substr(3, 2));
+            int year = std::stoi(dateStr.substr(6, 4));
 
-//         try {
-//             int day = std::stoi(dateStr.substr(0, 2));
-//             int month = std::stoi(dateStr.substr(3, 2));
-//             int year = std::stoi(dateStr.substr(6, 4));
+            auto date = std::chrono::sys_days{
+                std::chrono::year{year} / std::chrono::month{month} / std::chrono::day{day}
+            };
 
-//             auto date = std::chrono::sys_days{
-//                 std::chrono::year{year} / std::chrono::month{month} / std::chrono::day{day}
-//             };
+            std::getline(iss, description);
+            if (!description.empty() && description[0] == ' ') {
+                description = description.substr(1);
+            }
 
-//             std::getline(iss, description);
-//             if (!description.empty() && description[0] == ' ') {
-//                 description = description.substr(1);
-//             }
+            events.push_back({ date, description, line });
+        }
+        catch (const std::exception& ex) {
+            continue; 
+        }
+    }
+    inFile.close();
 
-//             events.push_back({ date, description, line });
-//         }
-//         catch (const std::exception& ex) {
-//             continue; 
-//         }
-//     }
-//     inFile.close();
+    std::sort(events.begin(), events.end());
 
-//     std::sort(events.begin(), events.end(), compareEvents);
+    std::ofstream outFile(filename);
+    if (!outFile.is_open()) {
+        throw std::runtime_error("Cannot open file for writing: " + filename);
+    }
 
-//     // std::ofstream outFile(filename);
-//     // if (!outFile.is_open()) {
-//     //     throw std::runtime_error("Cannot open file for writing: " + filename);
-//     // }
-
-//     // for (const auto& event : events) {
-//     //     outFile << event.description_ << "\n";
-//     // }
-//     // outFile.close();
-// }
+    for (const auto& event : events) {
+        outFile << event.description_ << "\n";
+    }
+    outFile.close();
+}
 int main() {
     setlocale (LC_ALL, "RU");
     try {
@@ -74,7 +70,7 @@ int main() {
         std::cout << "Enter file name: ";
         std::cin >> filename;
 
-        //sortFile(filename);
+        sortFile(filename);
 
         EventManager manager(filename);
 

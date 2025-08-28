@@ -46,15 +46,20 @@ std::chrono::sys_days EventManager::parseDate(const std::string& dateStr) {
 	return std::chrono::sys_days(ymd);
 }
 
-std::vector <Event> EventManager::getUpcomingEvents(std::chrono::sys_days date, size_t count) {
-	std::vector<Event> upcomingEvents;
-	for (const Event& e : events) {
-		if (e.getDate() >= date) {
-			upcomingEvents.push_back(e);
-		}
-		std::sort(upcomingEvents.begin(), upcomingEvents.end());
-		if (upcomingEvents.size() > count) {
-			upcomingEvents.erase(upcomingEvents.begin() + count, upcomingEvents.end());
-		}
-	}
+std::vector<Event> EventManager::getUpcomingEvents(std::chrono::sys_days date, size_t count) {
+    std::vector<Event> upcomingEvents;
+    
+    for (const Event& e : events) {
+        if (e.getDate() >= date) {
+            upcomingEvents.push_back(e);
+        }
+    }
+    
+    std::sort(upcomingEvents.begin(), upcomingEvents.end());
+    
+    if (count > 0 && upcomingEvents.size() > count) {
+        upcomingEvents.erase(upcomingEvents.begin() + count, upcomingEvents.end());
+    }
+    
+    return upcomingEvents;
 }

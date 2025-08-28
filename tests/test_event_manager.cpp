@@ -13,7 +13,7 @@ protected:
     void SetUp() override {
         std::ofstream file(filename);
         file << "15.08.2025 Project kickoff meeting\n";
-        file << "20.08.2025 Doctor appointment\n";
+        file << "20-08-2025 Doctor appointment\n";
         file << "01.09.2025 Start new course\n";
     }
 
@@ -22,33 +22,33 @@ protected:
     }
 };
 
-// TEST_F(EventManagerTest, DefisInput) {
-//     std::string filename2 = "defis_events.txt";
+TEST_F(EventManagerTest, DefisInput) {
+    std::string filename2 = "defis_events.txt";
 
-//     std::ofstream file2(filename2);
-//     file2 << "15-08-2026 Project kickoff meeting\n";
-//     file2 << "20-08-2026 Doctor appointment\n";
-//     file2 << "01-09-2026 Start new course\n";
+    std::ofstream file2(filename2);
+    file2 << "15.08.2026 Project kickoff meeting\n";
+    file2 << "20.08.2026 Doctor appointment\n";
+    file2 << "01.09.2026 Start new course\n";
 
-//     EventManager manager(filename2);
-//     auto events = manager.getUpcomingEvents(sys_days{ year{2026} / month{8} / day{10} }); 
+    EventManager manager(filename2);
+    auto events = manager.getUpcomingEvents(sys_days{ year{2025} / month{8} / day{10} }); 
 
-//     ASSERT_EQ(events.size(), 3);
+    ASSERT_EQ(events.size(), 3);
 
-//     EXPECT_EQ(events[0].getDescription(), "Project kickoff meeting");
-//     EXPECT_EQ(events[1].getDescription(), "Doctor appointment");
-//     EXPECT_EQ(events[2].getDescription(), "Start new course");
+    EXPECT_EQ(events[0].getDescription(), "Project kickoff meeting");
+    EXPECT_EQ(events[1].getDescription(), "Doctor appointment");
+    EXPECT_EQ(events[2].getDescription(), "Start new course");
 
-//     sys_days date1 = sys_days{ year{2026} / month{8} / day{15} };
-//     sys_days date2 = sys_days{ year{2026} / month{8} / day{20} };
-//     sys_days date3 = sys_days{ year{2026} / month{9} / day{1} };
+    sys_days date1 = sys_days{ year{2026} / month{8} / day{15} };
+    sys_days date2 = sys_days{ year{2026} / month{8} / day{20} };
+    sys_days date3 = sys_days{ year{2026} / month{9} / day{1} };
 
-//     EXPECT_EQ(events[0].getDate(), date1);
-//     EXPECT_EQ(events[1].getDate(), date2);
-//     EXPECT_EQ(events[2].getDate(), date3);
+    EXPECT_EQ(events[0].getDate(), date1);
+    EXPECT_EQ(events[1].getDate(), date2);
+    EXPECT_EQ(events[2].getDate(), date3);
 
-//     std::remove(filename2.c_str());
-// }
+    std::remove(filename2.c_str());
+}
 
 TEST_F(EventManagerTest, LoadsEventsFromFile) {
     EventManager manager(filename);
@@ -60,9 +60,9 @@ TEST_F(EventManagerTest, LoadsEventsFromFile) {
     EXPECT_EQ(events[1].getDescription(), "Doctor appointment");
     EXPECT_EQ(events[2].getDescription(), "Start new course");
 
-    sys_days date1 = sys_days{ year{2026} / month{8} / day{15} };
-    sys_days date2 = sys_days{ year{2026} / month{8} / day{20} };
-    sys_days date3 = sys_days{ year{2026} / month{9} / day{1} };
+    sys_days date1 = sys_days{ year{2025} / month{8} / day{15} };
+    sys_days date2 = sys_days{ year{2025} / month{8} / day{20} };
+    sys_days date3 = sys_days{ year{2025} / month{9} / day{1} };
 
     EXPECT_EQ(events[0].getDate(), date1);
     EXPECT_EQ(events[1].getDate(), date2);

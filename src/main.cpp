@@ -3,78 +3,78 @@
 #include <chrono>
 #include <format>
 
-void sortFile(const std::string filename) {
-    std::ifstream inFile(filename);
-    if (!inFile.is_open()) {
-        throw std::runtime_error("Cannot open file for sorting: " + filename);
-    }
+// bool compareEvents(const Event& a, const Event& b) {
+//     return a.date_ < b.date_;
+// }
 
-    std::vector<EventEntry> events;
-    std::string line;
+// void sortFile(const std::string& filename) {
+//     std::ifstream inFile(filename);
+//     if (!inFile.is_open()) {
+//         throw std::runtime_error("Cannot open file for sorting: " + filename);
+//     }
 
-    while (std::getline(inFile, line)) {
-        if (line.empty()) continue;
+//     std::vector<Event> events;
+//     std::string line;
 
-        std::istringstream iss(line);
-        std::string dateStr, description;
+//     while (std::getline(inFile, line)) {
+//         if (line.empty()) continue;
 
-        iss >> dateStr;
-        if (dateStr.size() != 10 || dateStr[2] != '.' || dateStr[5] != '.') {
-            if (dateStr.size() == 10 && dateStr[2] == '-' && dateStr[5] == '-') {
-                dateStr[2] = '.';
-                dateStr[5] = '.';
-            }
-            else {
-                continue;
-            }
-        }
+//         std::istringstream iss(line);
+//         std::string dateStr, description;
 
-        try {
-            int day = std::stoi(dateStr.substr(0, 2));
-            int month = std::stoi(dateStr.substr(3, 2));
-            int year = std::stoi(dateStr.substr(6, 4));
+//         iss >> dateStr;
+//         if (dateStr.size() != 10 || dateStr[2] != '.' || dateStr[5] != '.') {
+//             if (dateStr.size() == 10 && dateStr[2] == '-' && dateStr[5] == '-') {
+//                 dateStr[2] = '.';
+//                 dateStr[5] = '.';
+//             }
+//             else {
+//                 continue;
+//             }
+//         }
 
-            auto date = std::chrono::sys_days{
-                std::chrono::year{year} / std::chrono::month{month} / std::chrono::day{day}
-            };
+//         try {
+//             int day = std::stoi(dateStr.substr(0, 2));
+//             int month = std::stoi(dateStr.substr(3, 2));
+//             int year = std::stoi(dateStr.substr(6, 4));
 
-            std::getline(iss, description);
-            if (!description.empty() && description[0] == ' ') {
-                description = description.substr(1);
-            }
+//             auto date = std::chrono::sys_days{
+//                 std::chrono::year{year} / std::chrono::month{month} / std::chrono::day{day}
+//             };
 
-            events.push_back({ date, description, line });
-        }
-        catch (...) {
-            continue; 
-        }
-    }
-    inFile.close();
+//             std::getline(iss, description);
+//             if (!description.empty() && description[0] == ' ') {
+//                 description = description.substr(1);
+//             }
 
-    std::sort(events.begin(), events.end(), sortFile);
+//             events.push_back({ date, description, line });
+//         }
+//         catch (const std::exception& ex) {
+//             continue; 
+//         }
+//     }
+//     inFile.close();
 
-    std::ofstream outFile(filename);
-    if (!outFile.is_open()) {
-        throw std::runtime_error("Cannot open file for writing: " + filename);
-    }
+//     std::sort(events.begin(), events.end(), compareEvents);
 
-    for (const auto& event : events) {
-        outFile << event.originalLine << "\n";
-    }
-}
+//     // std::ofstream outFile(filename);
+//     // if (!outFile.is_open()) {
+//     //     throw std::runtime_error("Cannot open file for writing: " + filename);
+//     // }
 
+//     // for (const auto& event : events) {
+//     //     outFile << event.description_ << "\n";
+//     // }
+//     // outFile.close();
+// }
 int main() {
+    setlocale (LC_ALL, "RU");
     try {
         std::string filename;
         std::cout << "Enter file name: ";
         std::cin >> filename;
 
-        if (!hasTxtExtension(filename)) {
-            std::cerr << "Error: File must have .txt extension" << std::endl;
-            return 1;
-        }
-
-        sortFile(filename);
+        //sortFile(filename);
 
         EventManager manager(filename);
 

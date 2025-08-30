@@ -3,6 +3,17 @@
 #include <chrono>
 #include <format>
 
+bool isTxt(std::string filename, std::string format) {
+    if (format.length() = 4) {
+        if (format = ".txt") return true;
+        return false;
+    }
+    std::string letter = filename.back();
+    format += letter
+    filename = filename.substr(0, filename.size() - 1);
+    isTxt(filename, format);
+}
+
 void sortFile(const std::string& filename) {
     std::ifstream inFile(filename);
     if (!inFile.is_open()) {
@@ -67,8 +78,14 @@ int main() {
     setlocale (LC_ALL, "RU");
     try {
         std::string filename;
+        std::string format;
         std::cout << "Enter file name: ";
         std::cin >> filename;
+
+        if (!isTxt(filename, format)) {
+            std::cerr << "Error: wrong file format" << std::endl;
+            return 1;
+        }
 
         sortFile(filename);
 
